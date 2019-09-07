@@ -1,0 +1,20 @@
+service: simple-api-service
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  memorySize: 128
+  timeout: 15
+  stackName: simple-api-service
+  apiName: simple-api
+  deploymentBucket:
+    name: matheus-genteluci-bucket
+  deploymentPrefix: apis
+
+functions:
+  findItem:
+    handler: find-item/src/index.handler
+    name: find-item
+    reservedConcurrency: 1
+    events:
+      - http: get items

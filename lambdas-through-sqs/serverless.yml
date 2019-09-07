@@ -1,0 +1,38 @@
+service: simple-messaged-lambdas
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  memorySize: 128
+  timeout: 15
+  stackName: simple-messaged-lambdas
+  deploymentBucket:
+    name: matheus-genteluci-bucket
+  deploymentPrefix: lambdas
+
+functions:
+  cronFunction:
+    handler: cron-function/src/index.handler
+    name: cron-function
+    reservedConcurrency: 1
+    events:
+      - schedule: rate(12 hours)
+    environment:
+      SQS_QUEUE_NAME: LoggerTrigger
+  loggerFunction:
+    handler: logger/src/index.handler
+    name: logger-function
+    reservedConcurrency: 1
+    events:
+      - sqs:
+        arn: LoggerTrigger
+        batchSize: 1
+
+resources:
+  Resources:
+    LoggerTrigger:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: logger-trigger
+        MessageRetentionPeriod: 60
+        VisibilityTimeout: 60

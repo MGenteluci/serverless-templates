@@ -1,0 +1,17 @@
+service: simple-function-service
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  memorySize: 128
+  timeout: 15
+  stackName: simple-function-service
+  deploymentBucket:
+    name: matheus-genteluci-bucket
+  deploymentPrefix: lambdas
+
+functions:
+  simple-function:
+    handler: index.handler
+    name: simple-function
+    reservedConcurrency: 1
